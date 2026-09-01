@@ -39,8 +39,6 @@ WINE=/path/to/wine WINEPREFIX=/path/to/prefix ./linux/run.sh
 + Wine 11.12 Staging (osu-winello's `wine-osu` build), via [osu-winello](https://github.com/NelloKudo/osu-winello)
 + osu-trainer v1.8.0
 
-If it works (or doesn't) on your distro/Wine setup, open an issue with the details.
-
 ### Known rough edges
 + `updater.exe` still runs and phones home on every launch
 + WindowsAPICodePack taskbar/shell bits may not work under Wine (cosmetic only)
