@@ -39,5 +39,24 @@ if ! grep -q '"\*gdiplus"="native"' "$WINEPREFIX/user.reg" 2>/dev/null; then
     "$winetricks_bin" -q gdiplus
 fi
 
+if ! grep -q 'Software\\\\Classes\\\\\.osz\]' "$WINEPREFIX/user.reg" "$WINEPREFIX/system.reg" 2>/dev/null; then
+    echo "Registering .osz/.osz2/.osk file associations in the Wine prefix (one-time)..."
+    tmp_reg="$(mktemp --suffix .reg)"
+    cat > "$tmp_reg" <<'EOF'
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.osz]
+@="osustable.File.osz"
+
+[HKEY_CLASSES_ROOT\.osz2]
+@="osustable.File.osz2"
+
+[HKEY_CLASSES_ROOT\.osk]
+@="osustable.File.osk"
+EOF
+    "$WINE" regedit "$tmp_reg"
+    rm -f "$tmp_reg"
+fi
+
 cd "$INSTALL_DIR"
 exec "$WINE" osu-trainer.exe "$@"

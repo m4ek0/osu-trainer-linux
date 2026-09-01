@@ -13,9 +13,12 @@ point `WINE`/`WINEPREFIX` at your prefix.
 ./linux/run.sh
 ```
 
-First run downloads the latest release into `linux/osu-trainer/` and
-installs a native `gdiplus.dll` into the prefix if missing (Wine's built-in
-one throws `DllNotFoundException` on startup).
+First run downloads the latest release into `linux/osu-trainer/`, installs a
+native `gdiplus.dll` into the prefix if missing (Wine's built-in one throws
+`DllNotFoundException` on startup), and registers `.osz`/`.osz2`/`.osk` file
+associations in the prefix registry if missing (osu-winello sets up a
+Linux-side handler for these but not the in-prefix association that
+`ShellExecute` needs when osu-trainer opens a generated edit).
 
 ```sh
 WINE=/path/to/wine WINEPREFIX=/path/to/prefix ./linux/run.sh
