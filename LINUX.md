@@ -1,51 +1,27 @@
-# Running osu-trainer on Linux
+# Linux
 
-osu-trainer is a .NET Framework 4.8 WinForms app with no Linux build, so this
-fork doesn't rewrite it — it runs the official Windows binary through **Wine**,
-in the *same Wine prefix* your osu! (stable) install already uses. That last
-part matters: osu-trainer's live map/mod detection works by reading osu!'s
-process memory directly, and that only works across two Windows processes
-sitting inside the same Wine instance.
+Runs the official Windows build through Wine, in the same prefix osu!
+(stable) runs in — live map/mod detection reads osu!'s process memory
+directly, which only works if both are Windows processes in the same
+Wine prefix.
 
-## Requirements
-
-- osu! (stable) already running under Wine. Tested against
-  [osu-winello](https://github.com/NelloKudo/osu-winello), which is also the
-  default this script assumes. If you use a different Wine setup (Lutris, a
-  hand-rolled prefix, etc.), just point the `WINE` and `WINEPREFIX`
-  environment variables at wherever osu! lives.
-- `wine`, `winetricks`, `curl`, `unzip` available.
-
-## Usage
+Requires osu! (stable) already running under Wine. Defaults to
+[osu-winello](https://github.com/NelloKudo/osu-winello) paths; otherwise
+point `WINE`/`WINEPREFIX` at your prefix.
 
 ```sh
 ./linux/run.sh
 ```
 
-First run downloads the latest official release from
-[FunOrange/osu-trainer releases](https://github.com/FunOrange/osu-trainer/releases)
-into `linux/osu-trainer/`, and installs a native `gdiplus.dll` into the Wine
-prefix if it isn't already there (Wine's built-in one is incomplete and
-WinForms apps throw `DllNotFoundException` on startup without it).
-
-To use a different Wine prefix (e.g. not osu-winello):
+First run downloads the latest release into `linux/osu-trainer/` and
+installs a native `gdiplus.dll` into the prefix if missing (Wine's built-in
+one throws `DllNotFoundException` on startup).
 
 ```sh
 WINE=/path/to/wine WINEPREFIX=/path/to/prefix ./linux/run.sh
 ```
 
-## What was verified
+## Rough edges
 
-- The unmodified v1.8.0 Windows release launches and shows its window under
-  osu-winello's Wine prefix once `gdiplus` is installed natively — no source
-  changes needed.
-- Live osu! memory detection (the actual point of the app) depends on osu!
-  running in the same prefix at the same time; verify this yourself by
-  opening osu!, selecting a map, and checking the trainer window picks it up.
-
-## Known rough edges
-
-- The bundled `updater.exe` self-update step runs on every launch and talks
-  to the internet; it's not Linux/Wine-specific but is worth knowing about.
-- `Microsoft.WindowsAPICodePack` (taskbar/shell integration) may not fully
-  work under Wine — cosmetic only, doesn't block core functionality.
+- `updater.exe` still runs and phones home on every launch
+- WindowsAPICodePack taskbar/shell bits may not work under Wine (cosmetic only)
