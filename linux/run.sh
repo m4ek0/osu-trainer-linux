@@ -33,7 +33,7 @@ if [ ! -f "$INSTALL_DIR/osu-trainer.exe" ]; then
     rm -rf "$tmp_zip" "$tmp_extract"
 fi
 
-if ! grep -q '"gdiplus"="native"' "$WINEPREFIX/user.reg" 2>/dev/null; then
+if ! grep -q '"\*gdiplus"="native"' "$WINEPREFIX/user.reg" 2>/dev/null; then
     echo "Installing native gdiplus.dll into the Wine prefix (one-time)..."
     winetricks_bin="$(command -v winetricks || echo "$HOME/.local/share/osuconfig/winetricks")"
     "$winetricks_bin" -q gdiplus
