@@ -17,7 +17,7 @@ https://github.com/FunOrange/osu-trainer/releases/latest
 Runs the official Windows build through Wine, in the same prefix osu! (stable) runs in — live map/mod detection reads osu!'s process memory directly, which only works if both are Windows processes in the same Wine prefix.
 
 ### Requirements
-+ osu! (stable) already running under Wine. Defaults to [osu-winello](https://github.com/NelloKudo/osu-winello) paths; otherwise point `WINE`/`WINEPREFIX` at your prefix.
++ osu! (stable) already running under Wine. Defaults to [osu-winello](https://github.com/NelloKudo/osu-winello) paths; otherwise point `WINE`/`WINEPREFIX` at your prefix — none of the fixes below are osu-winello- or distro-specific, they just patch whatever Wine prefix you point at.
 + `wine`, `winetricks`, `curl`, `unzip`
 
 ### Usage
@@ -33,9 +33,6 @@ To use a different Wine prefix:
 ```sh
 WINE=/path/to/wine WINEPREFIX=/path/to/prefix ./linux/run.sh
 ```
-
-### Does this need osu-winello specifically?
-No — none of the fixes above are distro- or launcher-specific, they all just patch the Wine prefix itself. `osu-winello` is only where the default `WINE`/`WINEPREFIX` paths point; any Wine setup running osu! (stable) works if you override those two variables. Should work on any distro with Wine; only actually tested on the setup below so far.
 
 ### Tested on
 + CachyOS (Arch-based), kernel 7.2.0-1-cachyos, Hyprland (Wayland)
