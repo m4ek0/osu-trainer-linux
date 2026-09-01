@@ -58,5 +58,38 @@ EOF
     rm -f "$tmp_reg"
 fi
 
+if ! "$WINE" reg query "HKEY_CURRENT_USER\Software\Wine\Fonts\Replacements" /v "Segoe UI" >/dev/null 2>&1; then
+    echo "Installing Selawik (Segoe UI substitute) into the Wine prefix (one-time)..."
+    tmp_zip="$(mktemp --suffix .zip)"
+    curl -sL -o "$tmp_zip" "https://github.com/microsoft/Selawik/releases/download/1.01/Selawik_Release.zip"
+    tmp_extract="$(mktemp -d)"
+    unzip -q "$tmp_zip" -d "$tmp_extract"
+    fonts_dir="$(winepath -u 'C:\windows\Fonts' 2>/dev/null || echo "$WINEPREFIX/drive_c/windows/Fonts")"
+    cp "$tmp_extract"/selawk.ttf "$tmp_extract"/selawkb.ttf "$tmp_extract"/selawkl.ttf "$tmp_extract"/selawksb.ttf "$tmp_extract"/selawksl.ttf "$fonts_dir"/
+    rm -rf "$tmp_zip" "$tmp_extract"
+
+    tmp_reg="$(mktemp --suffix .reg)"
+    cat > "$tmp_reg" <<'EOF'
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts]
+"Selawik (TrueType)"="selawk.ttf"
+"Selawik Bold (TrueType)"="selawkb.ttf"
+"Selawik Light (TrueType)"="selawkl.ttf"
+"Selawik Semibold (TrueType)"="selawksb.ttf"
+"Selawik Semilight (TrueType)"="selawksl.ttf"
+
+[HKEY_CURRENT_USER\Software\Wine\Fonts\Replacements]
+"Segoe UI"="Selawik"
+"Segoe UI Light"="Selawik Light"
+"Segoe UI Semilight"="Selawik Semilight"
+"Segoe UI Semibold"="Selawik Semibold"
+"Segoe UI Emoji"="Selawik"
+"Microsoft Sans Serif"="Selawik"
+EOF
+    "$WINE" regedit "$tmp_reg"
+    rm -f "$tmp_reg"
+fi
+
 cd "$INSTALL_DIR"
 exec "$WINE" osu-trainer.exe "$@"

@@ -24,12 +24,25 @@ Runs the official Windows build through Wine, in the same prefix osu! (stable) r
 ```sh
 ./linux/run.sh
 ```
-First run downloads the latest release into `linux/osu-trainer/`, installs a native `gdiplus.dll` into the prefix if missing (Wine's built-in one throws `DllNotFoundException` on startup), and registers `.osz`/`.osz2`/`.osk` file associations in the prefix registry if missing (osu-winello sets up a Linux-side handler for these but not the in-prefix association `ShellExecute` needs when osu-trainer opens a generated edit).
+First run downloads the latest release into `linux/osu-trainer/` and applies three one-time fixes inside the Wine prefix:
++ installs a native `gdiplus.dll` (Wine's built-in one throws `DllNotFoundException` on startup)
++ registers `.osz`/`.osz2`/`.osk` file associations (osu-winello sets up a Linux-side handler for these but not the in-prefix association `ShellExecute` needs when osu-trainer opens a generated edit)
++ installs [Selawik](https://github.com/microsoft/Selawik) and aliases it to "Segoe UI" (the app's default UI font, which doesn't exist on Linux — without this, labels fall back to a mismatched generic font while the custom-embedded Comfortaa text renders fine regardless)
 
 To use a different Wine prefix:
 ```sh
 WINE=/path/to/wine WINEPREFIX=/path/to/prefix ./linux/run.sh
 ```
+
+### Does this need osu-winello specifically?
+No — none of the fixes above are distro- or launcher-specific, they all just patch the Wine prefix itself. `osu-winello` is only where the default `WINE`/`WINEPREFIX` paths point; any Wine setup running osu! (stable) works if you override those two variables. Should work on any distro with Wine; only actually tested on the setup below so far.
+
+### Tested on
++ CachyOS (Arch-based), kernel 7.2.0-1-cachyos, Hyprland (Wayland)
++ Wine 11.12 Staging (osu-winello's `wine-osu` build), via [osu-winello](https://github.com/NelloKudo/osu-winello)
++ osu-trainer v1.8.0
+
+If it works (or doesn't) on your distro/Wine setup, open an issue with the details.
 
 ### Known rough edges
 + `updater.exe` still runs and phones home on every launch
@@ -45,3 +58,4 @@ This project uses the following projects:
 - [oppai-ng](https://github.com/Francesco149/oppai-ng), [licensed under the Unlicense](https://github.com/Francesco149/oppai-ng/blob/master/UNLICENSE)
 - [ProcessMemoryDataFinder](https://github.com/Piotrekol/ProcessMemoryDataFinder), [licensed under GPL-3.0](https://github.com/Piotrekol/ProcessMemoryDataFinder/blob/master/LICENSE)
 - [LAME](https://lame.sourceforge.io/)
+- [Selawik](https://github.com/microsoft/Selawik) (Linux only, installed by `linux/run.sh`), [licensed under the MIT License](https://github.com/microsoft/Selawik/blob/master/LICENSE.txt)
